@@ -1,0 +1,21 @@
+<h2 >{{googleSingOnService?.user?.name |titlecase}}</h2>
+<div class="message-box" #messageBox scrollBottom>
+  <div *ngFor="let message of messages" class="my-3">
+    <h3 style="display: inline">{{message.from.name|titlecase}}:  </h3>
+    <span>{{message.message}}</span>
+  </div>
+</div>
+<!--
+<h6 *ngFor="let message of messages">{{message}}</h6>
+-->
+
+
+<select name="socket"
+        id="socket"
+        [(ngModel)]="selectedSocket">
+  <option *ngFor="let socket of socketIds" [ngValue]="socket.id">{{socket.data.name}}</option>
+</select>
+<input type="text" [(ngModel)]="message" (keyup.enter)="sendMessage()">
+<button (click)="sendMessage()">Gönder</button>
+
+<button (click)="logout()">Log Out</button>

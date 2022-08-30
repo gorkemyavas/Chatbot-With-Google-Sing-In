@@ -1,0 +1,7 @@
+<div #googleButton [ngStyle]="{'display':googleSingOnService.user?'none':'block'}">asd</div>
+<div *ngIf="googleSingOnService.user as socialUser">
+  <p>Hello, {{socialUser.name}}!</p>
+  <p>Your email: {{socialUser.email}}</p>
+  <button mat-raised-button color="primary" (click)="logout()">Logout</button>
+</div>
+
