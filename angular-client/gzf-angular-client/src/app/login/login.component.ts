@@ -15,9 +15,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   @ViewChild('googleButton') googleButton: ElementRef;
 
   constructor(public googleSingOnService: GoogleSingOnService,
-              private cdr: ChangeDetectorRef,
               private router: Router) {
-    googleSingOnService.cdr = cdr;
   }
 
   ngOnInit(): void {
@@ -41,7 +39,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   navigate(): void {
     this.router.navigateByUrl('/')
         .then(() => {
-          this.cdr?.detectChanges();
         });
   }
 

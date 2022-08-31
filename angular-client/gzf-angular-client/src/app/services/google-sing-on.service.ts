@@ -4,7 +4,7 @@ import { JwtService }             from './jwt.service';
 
 declare var google: any;
 export const GOOGLE_SCRIPT_URL = 'https://accounts.google.com/gsi/client';
-export const GOOGLE_PROVIDER = 'https://accounts.google.com/gsi/client';
+export const GOOGLE_PROVIDER = 'GOOGLE';
 export const GOOGLE_CLIENT_ID = '';
 
 @Injectable({
@@ -23,7 +23,6 @@ export class GoogleSingOnService {
     locale: 'en'
   };
   user: User | null = null;
-  cdr: ChangeDetectorRef |null = null;
 
   constructor(private scriptService: ScriptService,
               private jwtService: JwtService) {
@@ -60,7 +59,6 @@ export class GoogleSingOnService {
     const socialUser = this.createSocialUser(data.credential);
     localStorage.setItem('user', JSON.stringify(socialUser));
     this.user = socialUser;
-   // this.cdr?.detectChanges();
     runAfterSignIn();
   }
 

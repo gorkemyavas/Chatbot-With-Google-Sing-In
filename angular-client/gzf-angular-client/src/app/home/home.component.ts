@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { Socket, io }                                                             from 'socket.io-client';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, OnDestroy, NgZone } from '@angular/core';
+import { Socket, io }                                                                     from 'socket.io-client';
 import { DefaultEventsMap }                                                       from 'socket.io/dist/typed-events';
 import { GoogleSingOnService }                                                    from '../services/google-sing-on.service';
 import { Router }                                                                 from '@angular/router';
@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(public googleSingOnService: GoogleSingOnService,
               private router: Router,
-              private cdr: ChangeDetectorRef) {
+              private ngZone: NgZone) {
     if (!this.googleSingOnService.user) {
       this.router.navigateByUrl('/login')
           .then(() => {
@@ -29,34 +29,34 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.socket = io('ws://localhost:3000', { transports: ['websocket'] });
       this.socket.emit('name', this.googleSingOnService.user.name);
       this.socket.on('message', (data) => {
-        this.messages.push(JSON.parse(data));
-        this.cdr?.detectChanges();
+        this.ngZone.run(() => {
+          this.messages.push(JSON.parse(data));
+        })
       });
 
       this.socket.emit('serverList');
       this.socket.on('serverList', (data) => {
-        this.socketIds = [];
-        data = JSON.parse(data);
-        console.log(data);
-        Object.keys(data)
-              .forEach(key => {
-                if (key === this.socket?.id) {
-                  return;
-                }
-                let value = data[key];
-                this.socketIds.push(
-                  {
-                    id: key,
-                    data: value
+        this.ngZone.run(() => {
+          this.socketIds = [];
+          data = JSON.parse(data);
+          console.log(data);
+          Object.keys(data)
+                .forEach(key => {
+                  if (key === this.socket?.id) {
+                    return;
                   }
-                );
-              });
-        if (this.socketIds.length > 0) {
-          this.selectedSocket = this.socketIds[0].id;
-        }
-
-        //  this.socketIds = JSON.parse(data);
-        this.cdr?.detectChanges();
+                  let value = data[key];
+                  this.socketIds.push(
+                    {
+                      id: key,
+                      data: value
+                    }
+                  );
+                });
+          if (this.socketIds.length > 0) {
+            this.selectedSocket = this.socketIds[0].id;
+          }
+        });
       });
 
     }
